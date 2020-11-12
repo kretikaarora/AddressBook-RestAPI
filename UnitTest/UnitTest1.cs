@@ -112,7 +112,20 @@ namespace UnitTest
             Assert.AreEqual("jetter", employee.lastName);
             Assert.AreEqual(2, employee.id);
         }
+
+        /// <summary>
+        /// On Calling Delete API Should Delete Contact
+        /// UC5
+        /// </summary>
+        [TestMethod]
+        public void OnCalling_DeleteAPI_ShouldDeleteContact()
+        {
+            ///creating request for Delete method
+            RestRequest request = new RestRequest("/Employees/3", Method.DELETE);
+            ///executing request and storing in response
+            IRestResponse response = client.Execute(request);
+            ///checking if httpstatus is same
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        }
     }
-
-
 }
