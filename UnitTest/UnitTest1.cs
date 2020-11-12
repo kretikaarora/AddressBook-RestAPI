@@ -37,6 +37,10 @@ namespace UnitTest
             return response;
         }
 
+        /// <summary>
+        /// On Calling Get API Should Return Employee Details
+        /// UC22
+        /// </summary>
         [TestMethod]
         public void OnCalling_GetAPI_ShouldReturn_EmployeeObject()
         {
@@ -52,7 +56,40 @@ namespace UnitTest
             {
                 Console.WriteLine("id: " + employee.id + " firstname : " + employee.firstName + "  lastName :" + employee.lastName);
             }
+        }
 
+        /// <summary>
+        ///  On Adding MultipleEmployees Calling PostAPI Should Return EmployeeObject
+        ///  Uc23
+        /// </summary>
+        [TestMethod]
+        public void OnAddingMultipleEmployees_CallingPostAPI_ShouldReturnEmployeeObject()
+        {
+            List<EmployeeDetails> multipleEmployeeList = new List<EmployeeDetails>();
+            multipleEmployeeList.Add(new EmployeeDetails { id = 3, firstName = "apsy", lastName="Singh",address="Street3",city="Mumbai" });
+            multipleEmployeeList.Add(new EmployeeDetails { id = 7, firstName = "gen", lastName = "Farnsa", address = "Street4", city = "Bangalore" });
+            multipleEmployeeList.ForEach(employeedata =>
+            {
+                ///creating request for post method
+                RestRequest request = new RestRequest("/Employees", Method.POST);
+                ///new json object for adding employees
+                JsonObject jsonObject = new JsonObject();
+                jsonObject.Add("id", employeedata.id);
+                jsonObject.Add("firstname", employeedata.firstName);
+                jsonObject.Add("lastName", employeedata.lastName);
+                jsonObject.Add("address", employeedata.address);
+                jsonObject.Add("city", employeedata.city);
+                ///passing application type req , json object ,type of parameters info
+                request.AddParameter("application/json", jsonObject, ParameterType.RequestBody);
+                ///executing req and storing in response
+                IRestResponse response = client.Execute(request);
+                ///checking if httpstatus is same
+                Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
+                ///deserialising response and  checking name,id
+                EmployeeDetails employee = JsonConvert.DeserializeObject<EmployeeDetails>(response.Content);
+                Assert.AreEqual(employeedata.firstName, employee.firstName);
+                Assert.AreEqual(employeedata.id, employee.id);
+            });
         }
     }
 }
