@@ -91,5 +91,28 @@ namespace UnitTest
                 Assert.AreEqual(employeedata.id, employee.id);
             });
         }
+
+        /// <summary>
+        /// On Calling UpdateAPI Should Update Employee
+        /// UC24
+        /// </summary>
+        [TestMethod]
+        public void OnCalling_UpdateAPI_ShouldUpdateEmployee()
+        {
+            RestRequest request = new RestRequest("/Employees/2", Method.PUT);
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.Add("firstName", "deny");
+            jsonObject.Add("lastName", "jetter");
+            request.AddParameter("application/json", jsonObject, ParameterType.RequestBody);
+            IRestResponse response = client.Execute(request);
+            ///checking if httpstatus is same
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            EmployeeDetails employee = JsonConvert.DeserializeObject<EmployeeDetails>(response.Content);
+            Assert.AreEqual("deny", employee.firstName);
+            Assert.AreEqual("jetter", employee.lastName);
+            Assert.AreEqual(2, employee.id);
+        }
     }
+
+
 }
